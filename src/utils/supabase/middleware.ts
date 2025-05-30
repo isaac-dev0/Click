@@ -37,15 +37,28 @@ export const updateSession = async (request: NextRequest) => {
 
     // This will refresh session if expired - required for Server Components
     // https://supabase.com/docs/guides/auth/server-side/nextjs
-    const user = await supabase.auth.getUser();
+    const { data: { user }, error: userError } = await supabase.auth.getUser();
 
-    // protected routes
-    if (request.nextUrl.pathname.startsWith("/protected") && user.error) {
-      return NextResponse.redirect(new URL("/sign-in", request.url));
+    // Protected Routes
+    if (request.nextUrl.pathname.startsWith("/") && userError) {
+      return NextResponse.redirect(new URL("/login", request.url));
     }
 
-    if (request.nextUrl.pathname === "/" && !user.error) {
+    if (request.nextUrl.pathname === "/" && !userError) {
       return NextResponse.redirect(new URL("/protected", request.url));
+    }
+
+    if (user && !userError) {
+      const { data: profile, error: profileError } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('id', user.id)
+        .single();
+
+      // If no profile exists and user is not already on the create profile page
+      if (!profile && !profileError && !request.nextUrl.pathname.startsWith('/profile/create')) {
+        return NextResponse.redirect(new URL("/profile/create", request.url));
+      }
     }
 
     return response;

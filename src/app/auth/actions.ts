@@ -4,7 +4,7 @@ import { createClient } from "@/utils/supabase/server";
 import { EmailOtpType } from "@supabase/supabase-js";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { checkAccountStatus } from "../(auth-pages)/login/checkAccountStatus";
+import { checkAccountStatus } from "@/app/(auth-pages)/login/checkAccountStatus";
 
 export async function login(email: string) {
   const supabase = await createClient();
@@ -13,7 +13,7 @@ export async function login(email: string) {
     options: { shouldCreateUser: true },
   });
 
-  if (error) console.log(error);
+  if (error) console.error(error);
 }
 
 export async function verifyOtp(
@@ -31,7 +31,7 @@ export async function verifyOtp(
   if (!accountStatus) {
     redirect("/jobs");
   } else {
-    redirect("/create-profile")
+    redirect("/profile/create")
   }
 }
 

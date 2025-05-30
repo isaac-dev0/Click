@@ -1,3 +1,5 @@
+import { CreateProfileWizard } from "@/components/profile/create/v1/CreateProfileWizard";
+
 export default function CreateProfile() {
-  return <h1>Create Profile</h1>
+  return <CreateProfileWizard />;
 }

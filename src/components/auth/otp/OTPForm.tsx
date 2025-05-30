@@ -37,6 +37,7 @@ export function OTPForm({
 }: React.ComponentPropsWithoutRef<"div"> & OTPFormProps) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<IStatusMessage | undefined>();
+  
   const router = useRouter();
 
   const form = useForm<z.infer<typeof OTPFormSchema>>({
@@ -46,7 +47,7 @@ export function OTPForm({
     },
   });
 
-  const onSubmit = async (data: z.infer<typeof OTPFormSchema>) => {
+  const handleSubmit = async (data: z.infer<typeof OTPFormSchema>) => {
     setIsLoading(true);
     try {
       await verifyOtp(props.email, data.otp, "email");
@@ -80,7 +81,7 @@ export function OTPForm({
       </div>
       <div className="grid gap-6">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
             <FormField
               control={form.control}
               name="otp"
